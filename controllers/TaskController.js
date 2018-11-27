@@ -40,5 +40,23 @@ taskController.delete = function(req, res, next)
     })
 }
 
+taskController.buscar = function(req,res,next)
+{
+    let {id} = req.params;
+    Task.findById(id, function(err,tarea){
+        if(err)
+        {
+            return res.status(400).send({"error":err});
+        }
+        return res.status(200).json(tarea);
+    })
+}
+
+taskController.update = async function(req,res,next)
+{
+    let {id} = req.params;
+    await Task.update({_id:id},req.body);
+    return res.status(200).json({"message":"actaulizado con exito"});
+}
 
 module.exports = taskController;

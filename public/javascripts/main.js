@@ -24,6 +24,29 @@ document.querySelector('#fTareas').addEventListener('submit',function(e){
 });
 
 
+document.querySelector("#formUpdate").addEventListener('submit',function(e){
+    e.preventDefault();
+    let url = '/users/actualizar/'+document.forms["formUpdate"]['idTarea'].value;
+    var data = {
+        tarea: document.forms["formUpdate"]['tareaU'].value,
+        fecha: document.forms["formUpdate"]['fechaU'].value,
+    };
+   // console.log(url);
+    fetch(url,{
+        method:"PUT",
+        body: JSON.stringify(data),
+        headers:
+        {
+            'Content-Type':'application/json'
+        }
+    }).then(res => res.json())
+    .catch(error => console.log("Error:",error))
+    .then(function(response){
+        console.log("actualizado con exito");
+        tareas();
+    })
+});
+
 function tareas()
 {
     //contenedor
@@ -67,6 +90,26 @@ function tareas()
 
             });
         })
+        let btns_actualizar =  document.querySelectorAll('.actualizar');
+
+        btns_actualizar.forEach(item =>{
+            item.addEventListener("click", function(e){
+                e.preventDefault();
+                let url = this['href'];
+                console.log(url);
+                fetch(url,{method:"GET"})
+                .then(function(response){
+                    return response.text();
+                })
+                .then(function(data){
+                    console.log(JSON.parse(data).tarea);
+                    let formUpdate = document.querySelector('#formUpdate');
+                    formUpdate.idTarea.value = JSON.parse(data)._id;
+                    formUpdate.tareaU.value = JSON.parse(data).tarea;
+                    formUpdate.fechaU.value = JSON.parse(data).fecha;
+                });
+            });
+        });
     
     });
 
